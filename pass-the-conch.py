@@ -16,9 +16,9 @@ def say(text):
 def write_to_file(person, elapsed):
     f = open('log.txt', 'a')
 
-    today = datetime.datetime.today()
+    now = datetime.datetime.now()
 
-    f.write(f'{today:%d-%m-%Y}, {person}, {elapsed:.0f}\n')
+    f.write(f'{now:%d-%m-%Y %H:%M:%S}, {person}, {elapsed:.0f}\n')
     f.close()
 
 
@@ -27,15 +27,30 @@ def main():
 
     people = config.people[:]
 
+    say('Good morning everybody!')
+    count_people = 0
+    total_people = len(people)
     while len(people) > 0:
         chosen = random.choice(people)
-        say(f'Next is: {chosen}')
+
+        if count_people == 0:
+            say(f'The first today is: {chosen}')
+        elif len(people) == 1:
+            say(f'And finally the last person today is: {chosen}')
+        else:
+            say(f'Next is: {chosen}')
+
         starts_person = time.time()
         people.remove(chosen)
+        print(f'This is {count_people + 1} of {total_people}')
+        print()
         input('Press enter when finished\n')
         elapsed = time.time() - starts_person
 
         write_to_file(chosen, elapsed)
+        count_people += 1
+
+    say(f'Have a nice day!')
 
     elapsed_process = time.time() - starts_process
     print()
