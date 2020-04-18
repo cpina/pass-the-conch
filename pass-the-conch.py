@@ -22,14 +22,28 @@ def write_to_file(person, elapsed):
     f.close()
 
 
+def remove_people_off_today(people):
+    today = datetime.datetime.today().strftime('%a')
+
+    for person in people:
+        if person in config.days_off and today in config.days_off[person]:
+            people.remove(person)
+            print(f'{person} is off today')
+
+
 def main():
     starts_process = time.time()
 
     people = config.people[:]
 
-    say('Good morning everybody!')
+    remove_people_off_today(people)
+
+    say('Good morning!')
     count_people = 0
     total_people = len(people)
+
+    random.shuffle(people)
+
     while len(people) > 0:
         chosen = random.choice(people)
 
