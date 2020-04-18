@@ -7,10 +7,28 @@ import time
 
 import config
 
+sentences_transliterated = {
+    'Good morning!': {'russian': 'ГуД mopнинГ!'},
+    'Next is: {name}': {'russian': 'Неxт иc {name}'},
+    'The first today is: {name}': {'russian': 'де фирст тодаЙ ис: {name}'},
+    'The last person is: {name}': {'russsian': 'де ласт персон ис {name}'}
+}
 
-def say(text):
+
+def say(text, **variables):
     print(text)
-    os.system(f'echo {text} | festival --tts')
+
+    if config.language and config.language != 'english':
+        text = sentences_transliterated[text][config.language]
+        language = config.language
+    else:
+        language = 'english'
+
+    for key, content in variables.items():
+        text = text.replace(f'{{{key}}}', content)
+
+    print(f'To festival: {text}')
+    os.system(f'echo {text} | festival --tts --language {language}')
 
 
 def write_to_file(person, elapsed):
@@ -48,11 +66,11 @@ def main():
         chosen = random.choice(people)
 
         if count_people == 0:
-            say(f'The first today is: {chosen}')
+            say('The first today is: {name}', name=chosen)
         elif len(people) == 1:
-            say(f'And finally the last person today is: {chosen}')
+            say('The last person is: {name}', name=chosen)
         else:
-            say(f'Next is: {chosen}')
+            say('Next is: {name}', name=chosen)
 
         starts_person = time.time()
         people.remove(chosen)
@@ -63,8 +81,6 @@ def main():
 
         write_to_file(chosen, elapsed)
         count_people += 1
-
-    say(f'Have a nice day!')
 
     elapsed_process = time.time() - starts_process
     print()
