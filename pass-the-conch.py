@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import datetime
 import os
 import random
@@ -16,8 +17,6 @@ sentences_transliterated = {
 
 
 def say(text, **variables):
-    print(text)
-
     if config.language and config.language != 'english':
         text = sentences_transliterated[text][config.language]
         language = config.language
@@ -25,9 +24,14 @@ def say(text, **variables):
         language = 'english'
 
     for key, content in variables.items():
+        if key == 'name' and content in config.people_transliterated and \
+                config.language in config.people_transliterated[content]:
+            print(content)
+            content = config.people_transliterated[content][config.language]
+
         text = text.replace(f'{{{key}}}', content)
 
-    print(f'To festival: {text}')
+    print(f'Say: {text}')
     os.system(f'echo {text} | festival --tts --language {language}')
 
 
@@ -49,12 +53,25 @@ def remove_people_off_today(people):
             print(f'{person} is off today')
 
 
-def main():
+def remove_missing(people, missing_people):
+    if missing_people is None:
+        return
+
+    for missing_person in missing_people:
+        for person in people:
+            if person.lower() == missing_person.lower():
+                people.remove(person)
+
+
+def main(missing=None):
     starts_process = time.time()
 
     people = config.people[:]
 
+    remove_missing(people, missing)
+
     remove_people_off_today(people)
+    print('After removing:', people)
 
     say('Good morning!')
     count_people = 0
@@ -88,4 +105,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--missing', nargs='+', help='Missing people', required=False)
+
+    args = parser.parse_args()
+    main(missing=args.missing)
