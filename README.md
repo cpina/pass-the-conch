@@ -9,7 +9,7 @@ Using `pass-the-conch` the computer will decide randomly the order and change it
 
 ## Requirements
  - Python 3
- - Festival installed
+ - Festival
 
 ## Usage
  - Copy the file `config.example.py` to `config.py`
@@ -23,3 +23,5 @@ If some people are not in the meeting today:
 In the config.py there is a language setting and a people_transliterated.
 
 `festival` software can synthesize different languages. In our team we wanted festival to read English in Russian accent: for this we transliterated to Russian. The names also need to be transliterated so this is what we did.
+
+This can also be used to use the software in Russian (with the proper translation), Chinese, etc.
