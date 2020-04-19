@@ -11,5 +11,6 @@ people_transliterated = {
 
 language = 'english'
 
+# Not currently implemented:
 # birthday_name = 'Mary'
 # birthday_position = 3

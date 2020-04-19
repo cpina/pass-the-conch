@@ -4,9 +4,14 @@ import argparse
 import datetime
 import os
 import random
+import sys
 import time
 
-import config
+try:
+    import config
+except ModuleNotFoundError:
+    print('config.py cannot be imported. You might need to rename config.example.py to config.py', sys.stderr)
+    exit(1)
 
 sentences_transliterated = {
     'Good morning!': {'russian': 'ГуД mopнинГ!'},
@@ -58,9 +63,14 @@ def remove_missing(people, missing_people):
         return
 
     for missing_person in missing_people:
+        missing_person_found = False
         for person in people:
             if person.lower() == missing_person.lower():
                 people.remove(person)
+                missing_person_found = True
+
+        if missing_person_found is False:
+            print(f'Warning: tried to remove "{missing_person}" but not found')
 
 
 def main(missing=None):
@@ -70,8 +80,10 @@ def main(missing=None):
 
     remove_missing(people, missing)
 
+    people.sort()
+
     remove_people_off_today(people)
-    print('After removing:', people)
+    print('People participating today:', ", ".join(people))
 
     say('Good morning!')
     count_people = 0
@@ -106,7 +118,7 @@ def main(missing=None):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--missing', nargs='+', help='Missing people', required=False)
+    parser.add_argument('--missing', nargs='+', help='Missing people. Case insensitive', required=False)
 
     args = parser.parse_args()
     main(missing=args.missing)
