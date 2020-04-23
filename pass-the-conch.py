@@ -39,6 +39,7 @@ except ModuleNotFoundError:
 
 sentences_transliterated = {
     'Good morning!': {'russian': 'ГуД mopнинГ!'},
+    'Have a nice day': {'russian': 'Have a nice day!'},
     'Next is: {name}': {'russian': 'Неxт иc {name}'},
     'The first today is: {name}': {'russian': 'де фирст тодаЙ ис: {name}'},
     'The last person is: {name}': {'russsian': 'де ласт персон ис {name}'}
@@ -113,8 +114,6 @@ def main(missing=None):
     count_people = 0
     total_people = len(people)
 
-    random.shuffle(people)
-
     while len(people) > 0:
         chosen = random.choice(people)
 
@@ -135,6 +134,7 @@ def main(missing=None):
         write_to_file(chosen, elapsed)
         count_people += 1
 
+    say('Have a nice day')
     elapsed_process = time.time() - starts_process
     print()
     print(f'Total time: {elapsed_process / 60:.1f} minutes')
