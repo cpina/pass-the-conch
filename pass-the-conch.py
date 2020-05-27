@@ -94,7 +94,9 @@ def remove_missing(people, missing_people):
                 people.remove(person)
                 missing_person_found = True
 
-        if missing_person_found is False:
+        if missing_person_found:
+            print(f'{missing_person} removed')
+        else:
             print(f'Warning: tried to remove "{missing_person}" but not found')
 
 
