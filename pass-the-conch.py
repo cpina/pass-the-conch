@@ -100,16 +100,19 @@ def remove_missing(people, missing_people):
             print(f'Warning: tried to remove "{missing_person}" but not found')
 
 
-def main(missing=None):
+def main(missing=None, only=None):
     starts_process = time.time()
 
-    people = config.people[:]
+    if only is not None:
+        people = only
+    else:
+        people = config.people[:]
 
-    remove_missing(people, missing)
+        remove_missing(people, missing)
+        remove_people_off_today(people)
 
     people.sort()
 
-    remove_people_off_today(people)
     print('People participating today:', ", ".join(people))
 
     say('Good morning!')
@@ -145,6 +148,7 @@ def main(missing=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--missing', nargs='+', help='Missing people. Case insensitive', required=False)
+    parser.add_argument('--only', nargs='+', help='Only this people', required=False)
 
     args = parser.parse_args()
-    main(missing=args.missing)
+    main(missing=args.missing, only=args.only)
